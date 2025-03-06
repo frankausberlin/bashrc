@@ -145,27 +145,40 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 #   |   |
 #   `---'
 # >>>>>>>>>>>>>>>>
-
+python -c "import os; os.system('clear')"
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 export PATH=/home/frank/Android/Sdk/platform-tools:/home/frank/bin:$PATH
-alias suu="sudo apt update && sudo apt upgrade -y && flatpak update -y"
-alias los="sudo apt update && sudo apt upgrade -y && flatpak update -y && jl"
-alias rtc='npm start --prefix ~/labor/gits/openai-realtime-console'
-alias comfy='act ds; python ~/labor/gits/ComfyUI/main.py'
-alias a11='mamba activate a11; ~/labor/gits/stable-diffusion-webui/webui.sh; mamba activate $(test -f ~/.startenv && cat ~/.startenv || echo base)'
-alias hä='sgpt -d "es folgt die fehlerausgabe eines bash kommandos. bitte erkläre was die fehlermeldung bedeutet und wie man sie behoben werden kann. hier kommt die meldung: $(cat ~/.lasterror)"'
+export PATH=/usr/local/cuda/bin:$PATH
+export PATH=$HOME/go/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+export PATH=$PATH:$HOME/.local/bin
+# alias simple
 alias l='cd ~/labor'
 alias g='cd ~/labor/gits'
 alias d='cd ~/Downloads'
 alias ex='sgpt -s'
-alias cursor='~/apps/cursor/cursor-0.44.9-build-2412268nc6pfzgo-x86_64.AppImage --no-sandbox'
-# opencv cuda
-export PATH=/usr/local/cuda/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+alias suu="sudo apt update && sudo apt upgrade -y && flatpak update -y"
+alias los="suu && jl"
+alias stop="docker stop \$(docker ps -q)"
+# alias apps
+alias ml="docker run --gpus all --rm -d -p 8080:8080 mltooling/ml-workspace-gpu; deco \# 64; echo -e '# ml-container runnig - launch \e[4;34mhttp://localhost:8080\e[0m or ssh ml #'; deco \# 64"
+alias comfy='python ~/labor/gits/ComfyUI/main.py'
+alias a11='mamba activate a11; ~/labor/gits/stable-diffusion-webui/webui.sh; mamba activate $(test -f ~/.startenv && cat ~/.startenv || echo base)'
+alias cursor='~/.AppImage/cursor/*.AppImage --no-sandbox'
+alias dify='cd  ~/labor/gits/dify/docker; docker compose up -d'
+alias hä='sgpt -d "es folgt die fehlerausgabe eines bash kommandos. bitte erkläre was die fehlermeldung bedeutet und wie sie behoben werden kann. hier kommt die meldung: $(cat ~/.lasterror)"'
+alias rtc='npm start --prefix ~/labor/gits/openai-realtime-console'
+alias spur="cd ~/labor/gits/pyspur; docker compose -f ./docker-compose.prod.yml up --build -d; echo $'\n\e[106m' 'Open PySpur' $'\e[0m' 'on http://localhost:6080/' $'\n'"
+alias n8n="cd ~/labor/gits/n8n-hosting/docker-compose/withPostgresAndWorker && docker compose up -d"
+alias redis="docker run --rm -d --name redis-stack -p 6379:6379 -p 8001:8001 -v $HOME/labor/v_redis:/data redis/redis-stack:latest"
+alias anyllm="./AnythingLLMDesktop/start"
+alias lmstudio='~/.AppImage/lmstudio/*.AppImage --no-sandbox'
 
+# draw deco line
+deco() { [ "$#" -eq 0 ] && python -c "print('#'*80)"; [ "$#" -eq 1 ] && python -c "print('$1'*80)"; [ "$#" -eq 2 ] && python -c "print('$1'*$2)"; }
 
-# make alias function n for nnn: cd on quit # test git
-n () {
+# make alias function n for nnn: cd on quit
+nxx () {
     # Block nesting of nnn in subshells
     [ "${NNNLVL:-0}" -eq 0 ] || {
         echo "nnn is already running"
@@ -199,10 +212,11 @@ n () {
 # make env-vars
 #if [ -x "$(command -v tokread)" ]; then tokread; fi
 if [ -d "$HOME/.config/_exports" ]; then
+  python -c "print('_'*147+'\n'+'\x1b[106m_'*69+' exports '+'\x1b[106m_'*69+'\x1b[0m')"
   # Loop through all files in the directory
   count=-1
   for file in "$HOME/.config/_exports"/*; do
-    ((count++)); ((count % 4 == 0)) && echo -n $'\n'
+    ((count++)); ((count % 4 == 0 && count != 0)) && echo -n $'\n'
     # Check if it's a regular file
     if [ -f "$file" ]; then
       # Extract the filename without the path
@@ -215,7 +229,8 @@ if [ -d "$HOME/.config/_exports" ]; then
       printf "%-35s " "$var_name"
     fi
   done
-  printf '\n%*s\n' 147 '' | tr ' ' '_'
+  python -c "print('\n'+'\x1b[106m_'*147+'\x1b[0m')"
+  #printf '\n%*s\n' 147 '' | tr ' ' '_'
 fi
 
 # remember last error in ~/.lasterror to use it in hä-command 
@@ -225,6 +240,10 @@ trap 'if [ $? -ne 0 ]; then
   echo "$($BASH_COMMAND 2>&1)" >> ~/.lasterror;
   fi' ERR
 
+# fuck docker desktop
+#use() { [ "$#" -ne 0 ] && echo $1 > ~/.lastdockercontext && docker context use $1 > /dev/null 2>&1; }
+#docker context use $(test -f ~/.lastdockercontext && cat ~/.lastdockercontext || echo default)
+#printf '\n'
 
 # <<< my stuff <<<
 
@@ -255,12 +274,6 @@ jl ()
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
-
-#>>>>>_insert_datasciencenotebook_>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-deco() { [ "$#" -eq 0 ] && python -c "print('#'*80)"; [ "$#" -eq 1 ] && python -c "print('$1'*80)"; [ "$#" -eq 2 ] && python -c "print('$1'*$2)"; }
-alias ml="docker run --gpus all --rm -d -p 8080:8080 mltooling/ml-workspace-gpu; deco \# 64; echo -e '# ml-container runnig - launch \e[4;34mhttp://localhost:8080\e[0m or ssh ml #'; deco \# 64"
-alias stop="docker stop \$(docker ps -q)"
-#<<<<<_end_insert_datasciencenotebook_<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 #>>>>>_insert_environmentnotebook_>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ###################################################################################################
@@ -298,8 +311,14 @@ adx () {
 }
 #<<<<<_end_insert_environmentnotebook_<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-. "$HOME/.local/bin/env"
+if [ -f "$HOME/.local/bin/env" ]; then
+    . "$HOME/.local/bin/env"
+fi
 
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/home/frank/.cache/lm-studio/bin"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
