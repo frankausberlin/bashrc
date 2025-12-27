@@ -309,3 +309,62 @@ exportfolder () {
     done
     python -c "print('\n'+'\x1b[106m_'*147+'\x1b[0m')"
 }
+
+# Luxury Project Initializer (2025 Edition)
+# Usage: pyinit [project_name] 
+# If no name is provided, uses the current directory name.
+pyinit() {
+    local _project_name
+    
+    # 1. Determine project name: Use argument or current directory name
+    if [ -z "$1" ]; then
+        _project_name=$(basename "$PWD")
+        echo -e "\e[34m💎 Initializing Luxury Project in current folder: $_project_name...\e[0m"
+    else
+        _project_name=$1
+        echo -e "\e[34m💎 Creating Luxury Project directory: $_project_name...\e[0m"
+        mkdir -p "$_project_name" && cd "$_project_name"
+    fi
+
+    # 2. Initialize uv with a library structure and specific python version
+    # Note: uv init will not overwrite existing files
+    uv init --lib --python 3.12
+
+    # 3. Add essential Dev-Tools (Ruff, Pytest, IPyKernel)
+    echo -e "\e[34m📦 Adding Dev-Dependencies (Ruff, Pytest, IPyKernel)...\e[0m"
+    uv add --dev ruff pytest ipykernel
+
+    # 4. Setup VS Code Configuration
+    mkdir -p .vscode
+    cat <<EOF > .vscode/settings.json
+{
+    "python.defaultInterpreterPath": "\${workspaceFolder}/.venv/bin/python",
+    "python.analysis.typeCheckingMode": "basic",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.ruff": "always",
+        "source.organizeImports.ruff": "always"
+    },
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "src",
+        "tests"
+    ]
+}
+EOF
+
+    # 5. Initialize Git and fetch a modern .gitignore
+    if [ ! -d ".git" ]; then
+        echo -e "\e[34m⚙️ Initializing Git...\e[0m"
+        git init
+        curl -s https://www.toptal.com/developers/gitignore/api/python,linux,vscode > .gitignore
+    else
+        echo -e "\e[33m⚠️ Git already initialized. Skipping...\e[0m"
+    fi
+
+    # 6. Final Sync & activation
+    uv sync
+    echo -e "\e[32m✨ Success! Project '$_project_name' is ready for 2025.\e[0m"
+    echo -e "Next step: Run '\e[1;36mrlb\e[0m' to activate project environment."
+}
