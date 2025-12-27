@@ -84,26 +84,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -115,26 +95,55 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/frank/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/frank/miniforge3/etc/profile.d/conda.sh" ]; then
-        . "/home/frank/miniforge3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/frank/miniforge3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-
-if [ -f "/home/frank/miniforge3/etc/profile.d/mamba.sh" ]; then
-    . "/home/frank/miniforge3/etc/profile.d/mamba.sh"
-fi
-# <<< conda initialize <<<
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# >>> my stuff >>>
+#  .-"""-.
+# / _   _ \
+# ](_' `_)[
+# `-. N ,-' 
+#   |   |
+#   `---'
+# >>>>>>>>>>>>>>>>
+# Do not execute the conda/mamba block in vscode or if a .venv exists: start if-block
+if [ "$TERM_PROGRAM" != "vscode" ] && [ ! -d ./.venv ]; then
+    deactivate 2>/dev/null || true # deactivate any existing .venv environment
+# <<< my stuff <<<
+#  .-"""-.
+# / _   _ \
+# ](_' `_)[
+# `-. N ,-' 
+#   |   |
+#   `---'
+# <<<<<<<<<<<<<<<<
+
+    # >>> conda initialize >>>
+    # !! Contents within this block are managed by 'conda init' !!
+    __conda_setup="$('/home/frank/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
+    else
+        if [ -f "/home/frank/miniforge3/etc/profile.d/conda.sh" ]; then
+            . "/home/frank/miniforge3/etc/profile.d/conda.sh"
+        else
+            export PATH="/home/frank/miniforge3/bin:$PATH"
+        fi
+    fi
+    unset __conda_setup
+    # <<< conda initialize <<<
+
+    # >>> mamba initialize >>>
+    # !! Contents within this block are managed by 'mamba shell init' !!
+    export MAMBA_EXE='/home/frank/miniforge3/bin/mamba';
+    export MAMBA_ROOT_PREFIX='/home/frank/miniforge3';
+    __mamba_setup="$("$MAMBA_EXE" shell hook --shell bash --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__mamba_setup"
+    else
+        alias mamba="$MAMBA_EXE"  # Fallback on help from mamba activate
+    fi
+    unset __mamba_setup
+    # <<< mamba initialize <<<
 
 
 # >>> my stuff >>>
@@ -145,175 +154,77 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 #   |   |
 #   `---'
 # >>>>>>>>>>>>>>>>
-python -c "import os; os.system('clear')"
-export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-export PATH=/home/frank/Android/Sdk/platform-tools:/home/frank/bin:$PATH
-export PATH=/usr/local/cuda/bin:$PATH
-export PATH=$HOME/go/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-export PATH=$PATH:$HOME/.local/bin
-# alias simple
-alias l='cd ~/labor'
-alias g='cd ~/labor/gits'
-alias d='cd ~/Downloads'
-alias ex='sgpt -s'
-alias suu="sudo apt update && sudo apt upgrade -y && flatpak update -y"
-alias los="suu && jl"
-alias stop="docker stop \$(docker ps -q)"
-# alias apps
-alias ml="docker run --gpus all --rm -d -p 8080:8080 mltooling/ml-workspace-gpu; deco \# 64; echo -e '# ml-container runnig - launch \e[4;34mhttp://localhost:8080\e[0m or ssh ml #'; deco \# 64"
-alias comfy='python ~/labor/gits/ComfyUI/main.py'
-alias a11='mamba activate a11; ~/labor/gits/stable-diffusion-webui/webui.sh; mamba activate $(test -f ~/.startenv && cat ~/.startenv || echo base)'
-alias cursor='~/.AppImage/cursor/*.AppImage --no-sandbox'
-alias dify='cd  ~/labor/gits/dify/docker; docker compose up -d'
-alias hä='sgpt -d "es folgt die fehlerausgabe eines bash kommandos. bitte erkläre was die fehlermeldung bedeutet und wie sie behoben werden kann. hier kommt die meldung: $(cat ~/.lasterror)"'
-alias rtc='npm start --prefix ~/labor/gits/openai-realtime-console'
-alias spur="cd ~/labor/gits/pyspur; docker compose -f ./docker-compose.prod.yml up --build -d; echo $'\n\e[106m' 'Open PySpur' $'\e[0m' 'on http://localhost:6080/' $'\n'"
-alias n8n="cd ~/labor/gits/n8n-hosting/docker-compose/withPostgresAndWorker && docker compose up -d"
-alias redis="docker run --rm -d --name redis-stack -p 6379:6379 -p 8001:8001 -v $HOME/labor/v_redis:/data redis/redis-stack:latest"
-alias anyllm="./AnythingLLMDesktop/start"
-alias lmstudio='~/.AppImage/lmstudio/*.AppImage --no-sandbox'
-
-# draw deco line
-deco() { [ "$#" -eq 0 ] && python -c "print('#'*80)"; [ "$#" -eq 1 ] && python -c "print('$1'*80)"; [ "$#" -eq 2 ] && python -c "print('$1'*$2)"; }
-
-# make alias function n for nnn: cd on quit
-nxx () {
-    # Block nesting of nnn in subshells
-    [ "${NNNLVL:-0}" -eq 0 ] || {
-        echo "nnn is already running"
-        return
-    }
-
-    # The behaviour is set to cd on quit (nnn checks if NNN_TMPFILE is set)
-    # If NNN_TMPFILE is set to a custom path, it must be exported for nnn to
-    # see. To cd on quit only on ^G, remove the "export" and make sure not to
-    # use a custom path, i.e. set NNN_TMPFILE *exactly* as follows:
-    #      NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
-    export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
-
-    # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
-    # stty start undef
-    # stty stop undef
-    # stty lwrap undef
-    # stty lnext undef
-
-    # The command builtin allows one to alias nnn to n, if desired, without
-    # making an infinitely recursive alias
-    command nnn -H "$@"
-
-    [ ! -f "$NNN_TMPFILE" ] || {
-        . "$NNN_TMPFILE"
-        rm -f -- "$NNN_TMPFILE" > /dev/null
-    }
-}
-
-
-# make env-vars
-#if [ -x "$(command -v tokread)" ]; then tokread; fi
-if [ -d "$HOME/.config/_exports" ]; then
-  python -c "print('_'*147+'\n'+'\x1b[106m_'*69+' exports '+'\x1b[106m_'*69+'\x1b[0m')"
-  # Loop through all files in the directory
-  count=-1
-  for file in "$HOME/.config/_exports"/*; do
-    ((count++)); ((count % 4 == 0 && count != 0)) && echo -n $'\n'
-    # Check if it's a regular file
-    if [ -f "$file" ]; then
-      # Extract the filename without the path
-      var_name=$(basename "$file")
-      # Read the file content
-      var_value=$(cat "$file")
-      # Export the variable
-      export "$var_name"="$var_value"
-      # Print a message (optional)
-      printf "%-35s " "$var_name"
-    fi
-  done
-  python -c "print('\n'+'\x1b[106m_'*147+'\x1b[0m')"
-  #printf '\n%*s\n' 147 '' | tr ' ' '_'
+else # Do not execute the conda/mamba block in vscode or if a .venv exists: end if-block
+    # deactivate mamba/conda env if active twice env -> base; base -> none
+    [[ -n "$CONDA_PREFIX" ]] && conda deactivate > /dev/null 2>&1
+    [[ -n "$CONDA_PREFIX" ]] && conda deactivate > /dev/null 2>&1
+    # load custom env file if it exists
+    [ -d ./.venv ] && source .venv/bin/activate
 fi
 
-# remember last error in ~/.lasterror to use it in hä-command 
+###################################################################
+# function party
+###################################################################
+source ~/.bash_lib # exportadd, exportfolder, jl, adx, nxx, pyini
+
+###################################################################
+# export party
+###################################################################
+exportadd    "$HOME/Android/Sdk/platform-tools"
+exportadd    "/usr/local/cuda/bin"
+exportadd    "$HOME/go/bin"
+exportadd    "$HOME/.local/bin"
+exportadd    "$HOME/bin"
+exportadd    "/usr/local/cuda/lib64" LD_LIBRARY_PATH
+export       OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+export       TIMEZONE=Europe/Berlin
+export       N8N_SECURE_COOKIE=false
+export       TF_CPP_MIN_LOG_LEVEL=2
+exportfolder $HOME/.config/_exports
+
+###################################################################
+# alias party
+###################################################################
+source ~/.bash_aliases
+
+###################################################################
+# one-liner party
+###################################################################
+cw() { [[ "$1" == "." ]] && echo "$PWD" > "$HOME/.config/current_working_folder" || cd "$(cat "$HOME/.config/current_working_folder")"; }
+deco() { [ "$#" -eq 0 ] && python -c "print('#'*80)"; [ "$#" -eq 1 ] && python -c "print('$1'*80)"; [ "$#" -eq 2 ] && python -c "print('$1'*$2)"; }
+act() { [ "$#" -ne 0 ] && echo $1 > ~/.startenv && mamba activate $1; }
+chrome() { [[ "$1" == "d" ]] && chromerdb || google-chrome; }
+
+###################################################################
+# behavior party
+###################################################################
+# activate last used python environment
+[ "$TERM_PROGRAM" != "vscode" ] && [ ! -d ./.venv ] && mamba activate $(test -f ~/.startenv && cat ~/.startenv || echo base)
+
+# remember last error in ~/.lasterror to use it in wtf-command 
 trap 'if [ $? -ne 0 ]; then
-  echo "Fehler am $(date): $BASH_COMMAND" > ~/.lasterror;
-  echo "Fehlerdetails:" >> ~/.lasterror;
+  echo "Error at $(date): $BASH_COMMAND" > ~/.lasterror;
+  echo "Error details:" >> ~/.lasterror;
   echo "$($BASH_COMMAND 2>&1)" >> ~/.lasterror;
   fi' ERR
 
-# fuck docker desktop
-#use() { [ "$#" -ne 0 ] && echo $1 > ~/.lastdockercontext && docker context use $1 > /dev/null 2>&1; }
-#docker context use $(test -f ~/.lastdockercontext && cat ~/.lastdockercontext || echo default)
-#printf '\n'
+# fzf keybindings and fuzzy completion (Debian package)
+if [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
+  . /usr/share/doc/fzf/examples/key-bindings.bash
+fi
 
 # <<< my stuff <<<
-
-#>>>>>_insert_datasciencenotebook_>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# alternative mamba activate with remember last used environment
-act() { [ "$#" -ne 0 ] && echo $1 > ~/.startenv && mamba activate $1; }
-
-# activate last used environment
-mamba activate $(test -f ~/.startenv && cat ~/.startenv || echo base)
-
-# jupyter lab launcher
-jl ()
-{
-    [ $# -eq 0 ] && __notebookdir='~/labor' || __notebookdir=$1
-    echo '!!!ATENTION!!! every one in your network can access your local folder'
-    echo 'use http://localhost:8888/ to conncect local runtime'
-    echo "set notebook-dir to $__notebookdir"
-    jupyter lab \
-        --notebook-dir="$__notebookdir" \
-        --NotebookApp.allow_origin='https://colab.research.google.com' \
-        --port=8888 --NotebookApp.port_retries=0 \
-        --allow-root \
-        --NotebookApp.token='' \
-        --NotebookApp.disable_check_xsrf=True
-}
-#<<<<<_end_insert_datasciencenotebook_<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#  .-"""-.
+# / _   _ \
+# ](_' `_)[
+# `-. N ,-' 
+#   |   |
+#   `---'
+# <<<<<<<<<<<<<<<<
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
-
-#>>>>>_insert_environmentnotebook_>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-###################################################################################################
-# adx : show connections                # adx nr l - list packages of 192.168.178.nr              #
-# adx nr - connect to <your_ip>.nr      # adx str - list grepfiltered packages (1 connectd)       #
-# adx x - disconnect all                # adx nr str - list grepfiltered packages of <your_ip>.nr #
-# adx l - list packages (1 connected)   #                                                         #
-###################################################################################################
-adx () {
-    if [ "$#" -eq 0 ]; then
-        adb devices
-    else
-        if [ "$1" = 'x' ]; then
-            adb disconnect
-        else
-            if [ "$1" = 'l' ]; then
-                if [ "$#" -eq 1 ]; then
-                    adb shell pm list packages
-                else
-                    adb -s "192.168.178.$2" shell pm list packages
-                fi
-            else
-                if [[ "$1" =~ ^[0-9]+$ ]]; then
-                    if [ "$#" -eq 1 ]; then
-                        adb connect 192.168.178.$1
-                    else
-                        adb -s "192.168.178.$1" shell pm list packages | grep -i "$2"
-                    fi
-                else
-                    adb shell pm list packages | grep -i "$1"
-                fi
-            fi
-        fi
-    fi
-}
-#<<<<<_end_insert_environmentnotebook_<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-if [ -f "$HOME/.local/bin/env" ]; then
-    . "$HOME/.local/bin/env"
-fi
 
 
 # Added by LM Studio CLI (lms)
@@ -322,3 +233,8 @@ export PATH="$PATH:/home/frank/.cache/lm-studio/bin"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+. "$HOME/.cargo/env"
+
+export PATH=$PATH:/opt/android-ndk/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin
