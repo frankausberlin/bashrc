@@ -85,7 +85,7 @@ alias kk="pgrep kodi | xargs kill -9"
 # Run SearXNG search engine in Docker on port 8088
 alias searx='mkdir -p ~/.searxng/config/ ~/.searxng/data/ ; docker stop searxng >/dev/null 2>&1 ; docker rm searxng >/dev/null 2>&1 ; docker run --name searxng -d --restart unless-stopped -p 8088:8080 -v "/home/frank/.searxng/config/:/etc/searxng/" -v "/home/frank/.searxng/data/:/var/cache/searxng/" docker.io/searxng/searxng:latest && echo -e "to stop \x1b[46msearxng on 8088\x1b[0m type stop"'
 # explain last error
-alias wtf='sgpt -d "es folgt die fehlerausgabe eines bash kommandos. bitte erkläre was die fehlermeldung bedeutet und wie sie behoben werden kann. hier kommt die meldung: $(cat ~/.lasterror)"'
+alias wtf='sgpt -d "The following is the error output of a bash command. Please explain what the error message means and how it can be fixed. Please answer in German. Here is the message: $(cat ~/.lasterror)"'
 
 # Connections
 alias doogee="ssh -o IdentitiesOnly=yes -i ~/.ssh/id_doogee -p 8022 u0_a202@doogee"
