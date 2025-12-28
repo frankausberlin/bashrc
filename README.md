@@ -24,7 +24,8 @@ A comprehensive and luxurious Bash configuration tailored for Python development
 - **Navigation**: Quick aliases like `l` (~/labor), `g` (~/labor/gits), `d` (~/Downloads)
 - **Development**: Launch PyCharm (`pc`), Cursor (`cursor`), KiloCode (`kc`)
 - **AI/ML Tools**: One-command launches for ComfyUI, Stable Diffusion WebUI, Dify, Flowise, LibreChat, PySpur, Deer Flow, Magnetic UI, AnythingLLM, LM Studio, Pinokio, N8N, Redis, Gemini, Open WebUI
-- **System Management**: Safe system updates (`suu`), Docker container management (`stop`)
+- **System Management**: System updates (`suu`), Docker container management (`stop`)
+- **Git Automation**: AI-powered Git commit (`gico`) - automatically generates commit messages using AI based on git diff
 - **Shell Management**: `rlb` reloads bashrc, `rlb m` forces conda mode (red prompt)
 - **Error Handling**: Automatic error logging and `wtf` alias for AI-powered error explanations
 
@@ -33,6 +34,9 @@ A comprehensive and luxurious Bash configuration tailored for Python development
 - **Search & Completion**: FZF keybindings and fuzzy completion
 - **Remote Connections**: SSH aliases for Android devices
 - **Cloud Services**: Google Drive mounting, ngrok tunnels for N8N
+
+### Automation Scripts
+- **Auto Sync and Commit** (`auto.sh`): Automatically syncs configuration files from home directory and performs AI-powered Git commits with generated messages
 
 ## 🐍 Python Ecosystem Support
 
