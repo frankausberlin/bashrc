@@ -9,6 +9,8 @@ A comprehensive and luxurious Bash configuration tailored for Python development
 - **VS Code Integration**: Prevents environment conflicts by not activating Conda in VS Code terminals
 - **uv Support**: Detects and activates local `.venv` environments created by uv in project directories
 - **Environment Switching**: Use `act <env>` to switch environments and remember your choice
+- **Force Mode**: Use `rlb m` to force conda activation (red prompt indicators) even when uv environments exist
+- **Smart Terminal Prompt**: Enhanced PS1 showing random emojis, user/host info, current directory, and Python environment status with color-coded environment indicators (green=conda, cyan=uv, red=force mode)
 
 ### Development Tools
 - **Jupyter Lab Launcher** (`jl`): Start Jupyter Lab with optimized settings for local development
@@ -16,12 +18,14 @@ A comprehensive and luxurious Bash configuration tailored for Python development
 - **Android Development** (`adx`): ADB utilities for managing Android devices and packages
 - **Path Management**: `exportadd` for safely adding paths to environment variables
 - **Custom Exports**: `exportfolder` loads environment variables from `~/.config/_exports`
+- **Luxury Project Initializer** (`pyinit`): Automated Python project setup with uv, VS Code configuration, and best practices
 
 ### Productivity Aliases
 - **Navigation**: Quick aliases like `l` (~/labor), `g` (~/labor/gits), `d` (~/Downloads)
 - **Development**: Launch PyCharm (`pc`), Cursor (`cursor`), KiloCode (`kc`)
-- **AI/ML Tools**: One-command launches for ComfyUI, Stable Diffusion WebUI, Dify, Flowise, LibreChat, and more
+- **AI/ML Tools**: One-command launches for ComfyUI, Stable Diffusion WebUI, Dify, Flowise, LibreChat, PySpur, Deer Flow, Magnetic UI, AnythingLLM, LM Studio, Pinokio, N8N, Redis, Gemini, Open WebUI
 - **System Management**: Safe system updates (`suu`), Docker container management (`stop`)
+- **Shell Management**: `rlb` reloads bashrc, `rlb m` forces conda mode (red prompt)
 - **Error Handling**: Automatic error logging and `wtf` alias for AI-powered error explanations
 
 ### Modern Tooling Integration
@@ -43,7 +47,8 @@ This configuration is designed around a sophisticated Python development workflo
 - **LLM Frameworks**: LangChain, LlamaIndex, Transformers, vLLM, Ollama
 - **AI Tools**: ShellGPT for command-line AI assistance, Jupyter AI extensions
 - **ML Workspaces**: Docker-based ML environments with GPU support
-- **Specialized Apps**: ComfyUI, Stable Diffusion, Dify, Flowise, LibreChat, Open WebUI
+- **Specialized Apps**: ComfyUI, Stable Diffusion, Dify, Flowise, LibreChat, Open WebUI, PySpur, Deer Flow, Magnetic UI, AnythingLLM, LM Studio, Pinokio
+- **AI Platforms**: N8N workflow automation, Redis stack, Gemini CLI, Open WebUI
 
 ### Development Workflow
 For the complete luxury Python development experience, see [`pydev_lux.md`](pydev_lux.md) - a comprehensive guide covering:

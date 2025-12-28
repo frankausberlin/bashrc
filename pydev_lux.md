@@ -32,7 +32,7 @@ The **basic mechanism** relies on implementing **two rules** in `.bashrc` and us
 | `act <env>` | Activate a specific environment and remember it in `.lastenv` |
 | `rlb` | Reload bashrc (`source ~/.bashrc`) |
 | `jl [folder]` | Start Jupyter Lab |
-| `pyini` | Create all for a new python project |
+| `pyinit` | Create all for a new python project |
 
 ### Jupyter Lab Launcher
 
@@ -176,7 +176,7 @@ my_project/
 Create `.vscode/settings.json` and all needed with the script:
 
 ```bash
-pyini
+pyinit
 ```
 
 ```json

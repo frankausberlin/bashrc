@@ -165,7 +165,7 @@ fi
 ###################################################################
 # function party
 ###################################################################
-source ~/.bash_lib # exportadd, exportfolder, jl, adx, nxx, pyini
+source ~/.bash_lib # exportadd, exportfolder, jl, adx, nxx, pyinit
 
 ###################################################################
 # export party
