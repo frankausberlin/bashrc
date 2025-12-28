@@ -1,12 +1,5 @@
 # Bash Aliases
 
-# Safety function for system-modifying commands
-confirm_system_update() {
-    echo "This command will update system packages. Continue? (y/N)"
-    read -r response
-    [[ "$response" =~ ^[Yy]$ ]]
-}
-
 # Original aliases from .bashrc
 # some more ls aliases
 alias ll='ls -alF'
@@ -69,10 +62,12 @@ alias mui="mamba activate mui11 && magentic ui --port 8081 && mamba activate $(t
 alias gem="nvm use 22 && gemini"
 # Run Open WebUI with uvx
 alias owu="DATA_DIR=~/.open-webui uvx --python 3.11 open-webui@latest serve"
+# make a git commit with ai message
+alias gico="kilocode --auto 'Check this folder for Git changes, create a message via git-diff, stage, commit and push everything to the GitHub repo.'"
 
 # System Management
 # Update system packages with confirmation
-alias suu="confirm_system_update && sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt clean && flatpak update -y && sudo snap refresh"
+alias suu="sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt clean && flatpak update -y && sudo snap refresh"
 alias los="cw && suu"
 alias losj="cw && suu && jl . && stop"
 alias losc="cw && suu && chromerdb && stop"
