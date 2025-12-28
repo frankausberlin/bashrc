@@ -106,7 +106,7 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 #   `---'
 # >>>>>>>>>>>>>>>>
 # Do not execute the conda/mamba block in vscode or if a .venv exists: start if-block
-if [ "$TERM_PROGRAM" != "vscode" ] && [ ! -d ./.venv ]; then
+if [ "$TERM_PROGRAM" != "vscode" ] && [ ! -d ./.venv ] && [ "$FORCE_MAMBA_INIT" != "true" ]; then
     deactivate 2>/dev/null || true # deactivate any existing .venv environment
 # <<< my stuff <<<
 #  .-"""-.
@@ -194,12 +194,16 @@ cw() { [[ "$1" == "." ]] && echo "$PWD" > "$HOME/.config/current_working_folder"
 deco() { [ "$#" -eq 0 ] && python -c "print('#'*80)"; [ "$#" -eq 1 ] && python -c "print('$1'*80)"; [ "$#" -eq 2 ] && python -c "print('$1'*$2)"; }
 act() { [ "$#" -ne 0 ] && echo $1 > ~/.startenv && mamba activate $1; }
 chrome() { [[ "$1" == "d" ]] && chromerdb || google-chrome; }
+rlb() { [[ "$1" == "m" ]] && export FORCE_MAMBA_INIT="true" || export FORCE_MAMBA_INIT="false"; source ~/.bashrc; }
+
 
 ###################################################################
 # behavior party
 ###################################################################
-# activate last used python environment
-[ "$TERM_PROGRAM" != "vscode" ] && [ ! -d ./.venv ] && mamba activate $(test -f ~/.startenv && cat ~/.startenv || echo base)
+# deactivate any existing .venv environment if mamba init is forced
+[[ $FORCE_MAMBA_INIT == "true" ]] && deactivate 2>/dev/null || true 
+# activate last used python environment unless in vscode or a .venv exists or forced
+[[ ( "$TERM_PROGRAM" != "vscode" && ! -d ./.venv ) || "$FORCE_MAMBA_INIT" == "true" ]] && mamba activate $([[ -f ~/.startenv ]] && cat ~/.startenv || echo base)
 
 # remember last error in ~/.lasterror to use it in wtf-command 
 trap 'if [ $? -ne 0 ]; then
@@ -212,6 +216,12 @@ trap 'if [ $? -ne 0 ]; then
 if [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
   . /usr/share/doc/fzf/examples/key-bindings.bash
 fi
+
+# My smart PS1: shows random emoji, user@host, current folder, python env info
+prompt_user=$(whoami)
+prompt_host=$(hostname)
+PS1='$(RANDOM_EMOJI) \[\033[1;32m\]╭──(\[\033[1;34m\]${prompt_user}@${prompt_host}\[\033[1;32m\])─[\[\033[1;37m\]\w\[\033[1;32m\]] $(python_info)
+\[\033[1;32m\]╰─\[\033[1;34m\]\$\[\033[0m\] '
 
 # <<< my stuff <<<
 #  .-"""-.

@@ -28,7 +28,7 @@ alias cursor='~/.AppImage/cursor/*.AppImage --no-sandbox'
 alias pc="~/opt/pycharm-2025.2.4/bin/pycharm.sh &"
 alias kc="kilocode"
 alias pypurge='pip cache purge; mamba clean --all'
-alias rlb="set FORCE_MAMBA_INIT=1 && source ~/.bashrc"
+
 
 # AI/ML Tools
 # ShellGPT shortcut

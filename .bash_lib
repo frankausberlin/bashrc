@@ -7,6 +7,36 @@ JUPYTER_DEFAULT_DIR="~/labor"
 JUPYTER_PORT=8888
 ADB_IP_PREFIX="192.168.178."
 EXPORTS_DIR="$HOME/.config/_exports"
+EMOJIS=(🐧 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👹 👺 🤡 💩 👻 💀 ☠️ 👽 👾 🤖 🎃 😺 😸 😹 😻 )
+
+# smart terminal prompt showing conda/venv envs
+RANDOM_EMOJI() { SELECTED_EMOJI=${EMOJIS[$RANDOM % ${#EMOJIS[@]}]}; echo $SELECTED_EMOJI; }
+python_info() {
+    local color_bracket="\033[1;32m"
+    local color_content=""
+    local label=""
+
+    #1. Determine mode and colors
+    if [[ "$FORCE_MAMBA_INIT" == "true" ]]; then
+        color_bracket="\033[1;31m" # Force mode: Bright Red brackets
+        color_content="\033[0;37m" # Content: White
+        label="${CONDA_DEFAULT_ENV:-base}"
+    elif [[ -n "$CONDA_DEFAULT_ENV" ]]; then
+        color_bracket="\033[1;32m" # Normal: Green brackets
+        color_content="\033[0;37m" # Content: White
+        label="$CONDA_DEFAULT_ENV"
+    elif [[ -d "./.venv" || -n "$VIRTUAL_ENV" ]]; then
+        color_bracket="\033[1;32m" # Normal: Green brackets
+        color_content="\033[1;36m" # Content: Bright Cyan
+        label="$(basename "$PWD")"
+    fi
+
+    #2. Output only if a label exists
+    if [[ -n "$label" ]]; then
+        echo -e "${color_bracket}(${color_content}${label}${color_bracket})\033[0m"
+    fi
+}
+
 
 # nxx: Launches nnn file manager with cd on quit functionality.
 #
