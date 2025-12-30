@@ -1,59 +1,59 @@
 # AI Context: Python Environment Architecture (Level 0-3)
 
-## 🎯 Zweck dieses Dokuments
-Dieses Dokument dient als Master-Instruktion für die Arbeit in diesem Repository. Jede Code-Änderung, jedes neue Skript und jede Environment-Manipulation muss die folgende 4-Schichten-Architektur respektieren.
+## 🎯 Purpose of this document
+This document serves as a master instruction for working in this repository. Every code change, every new script and every environment manipulation must respect the following 4-tier architecture.
 
 ---
 
-## 🏗 Die 4 Ebenen (The Levels)
+## 🏗 The 4 Levels
 
-### Level 0: OS-Fundament / Build Primitives
-- **Verantwortung:** System-Pakete, Compiler, Basistools.
+### Level 0: OS Foundation / Build Primitives
+- **Responsibility:** System packages, compilers, basic tools.
 - **Tools:** `apt`, `build-essential`, `git`, `docker`, `openjdk`.
-- **Regel:** Hier wird kein Python-Code ausgeführt. Hier werden nur die Voraussetzungen für die Tools geschaffen.
+- **Rule:** No Python code is executed here. Here only the prerequisites for the tools are created.
 
-### Level 1: User-Space Orchestratoren (Die Werkzeuge)
-- **Verantwortung:** Management-Tools, die Environments erzeugen oder steuern.
-- **Kern-Tools:** - `uv` (Globaler Standard für Python-Management)
-  - `micromamba` (Nur das Binary, für Heavy-Runtimes)
-  - `bashrc` / `.bash_lib` (Die Logik-Zentrale)
-- **Regel:** Tools leben im PATH, aber niemals innerhalb einer aktivierten Umgebung. Sie sind "Stateless".
+### Level 1: User-Space Orchestrators (The Tools)
+- **Responsibility:** Management tools that create or control environments.
+- **Core tools:** - `uv` (Global Standard for Python Management)
+  - `micromamba` (only the binary, for heavy runtimes)
+  - `bashrc` / `.bash_lib` (The logic center)
+- **Rule:** Tools live in the PATH, but never within an enabled environment. They are “stateless”.
 
 ### Level 2: Heavy / Shared Runtimes (Data Science Stack)
-- **Verantwortung:** Große, langlebige Umgebungen mit komplexen Abhängigkeiten (CUDA, PyTorch).
+- **Responsibilities:** Large, long-lived environments with complex dependencies (CUDA, PyTorch).
 - **Management:** Via `micromamba`.
-- **Regel:** Werden global registriert (z.B. als Jupyter Kernel), um von Level 3 aus genutzt zu werden.
+- **Rule:** Are registered globally (e.g. as Jupyter Kernel) to be used from Level 3.
 
-### Level 3: Projekt-Environments (Workspaces)
-- **Verantwortung:** Projekt-spezifische, isolierte Umgebungen.
+### Level 3: Project environments (workspaces)
+- **Responsibilities:** Project specific, isolated environments.
 - **Management:** Via `uv` (`.venv`, `pyproject.toml`).
-- **Regel:** Wegwerfbar, reproduzierbar, repo-lokal.
+- **Rule:** Disposable, reproducible, repo-local.
 
 ---
 
-## 🛠 Spezifische Arbeitsanweisungen für die KI (Kilocode/MCP)
+## 🛠 Specific work instructions for AI (Kilocode/MCP)
 
-1. **Bash-Logik (`.bash_lib` & `.bashrc`):**
-   - Funktionen müssen "Level-Aware" sein.
-   - Nutze die existierende `exportadd`-Logik für Pfad-Manipulationen.
-   - Priorisiere bei der Aktivierung: Level 3 (`.venv`) > Level 2 (`~/.startenv`).
+1. **Bash logic (`.bash_lib` & `.bashrc`):**
+   - Functions must be “level-aware”.
+   - Use the existing `exportadd` logic for path manipulations.
+   - Prioritize activation: Level 3 (`.venv`) > Level 2 (`~/.startenv`).
 
-2. **Python-Workflows:**
-   - Installiere niemals Libraries global.
-   - Nutze `uv tool install` für CLI-Apps (Level 1).
-   - Nutze `uv add` für Projekt-Abhängigkeiten (Level 3).
+2. **Python Workflows:**
+   - Never install libraries globally.
+   - Use `uv tool install` for CLI apps (Level 1).
+   - Use `uv add` for project dependencies (level 3).
 
-3. **Integration & Aliase:**
-   - Neue Aliase gehören in `.bash_aliases`.
-   - Komplexe Logik gehört in `.bash_lib`.
-   - Der Prompt (PS1) muss den Status der Levels (Farben!) widerspiegeln.
-
----
-
-## 🚩 Aktueller Arbeitsauftrag für die Session
-1. **Status Quo:** Analyse der vorhandenen `.bash_lib` im Repo.
-2. **Ziel:** Optimierung der `pyinit`-Funktion und der Jupyter-Kernel-Integration gemäß der Level-Trennung.
-3. **Task:** Erstelle robuste Bootstrap-Logik für das `devenv`-Notebook (L0/L1) und das `pythoncoding`-Notebook (L2/L3).
+3. **Integration & Aliases:**
+   - New aliases belong in `.bash_aliases`.
+   - Complex logic belongs in `.bash_lib`.
+   - The prompt (PS1) must reflect the status of the levels (colors!).
 
 ---
-**Hinweis für die KI:** Arbeite konservativ. Ändere keine Pfade, ohne die Auswirkungen auf die anderen Level zu prüfen. Nutze vorhandene Variablen aus der `.bash_lib`.
+
+## 🚩 Current work order for the session
+1. **Status Quo:** Analysis of the existing `.bash_lib` in the repo.
+2. **Goal:** Optimize the `pyinit` function and Jupyter kernel integration according to level separation.
+3. **Task:** Create robust bootstrap logic for the `devenv` notebook (L0/L1) and the `pythoncoding` notebook (L2/L3).
+
+---
+**Note to AI:** Work conservatively. Don't change paths without checking the effects on the other levels. Use existing variables from `.bash_lib`.
