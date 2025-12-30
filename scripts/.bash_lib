@@ -341,11 +341,11 @@ exportfolder () {
 }
 
 # Luxury Project Initializer (2025 Edition)
-# Usage: pyinit [project_name] 
+# Usage: pyinit [project_name]
 # If no name is provided, uses the current directory name.
 pyinit() {
     local _project_name
-    
+
     # 1. Determine project name: Use argument or current directory name
     if [ -z "$1" ]; then
         _project_name=$(basename "$PWD")
@@ -393,8 +393,51 @@ EOF
         echo -e "\e[33m⚠️ Git already initialized. Skipping...\e[0m"
     fi
 
-    # 6. Final Sync & activation
+    # 6. Final Sync
     uv sync
+
+    # 7. Optional Jupyter Kernel Registration
+    echo -e "\e[34m🧠 Jupyter Kernel Setup\e[0m"
+    echo -e "Do you want to register a Jupyter kernel for this project? (y/n)"
+    read -r _kernel_choice
+    if [[ "$_kernel_choice" =~ ^[Yy]$ ]]; then
+        # Determine available Level 2 environment
+        local _level2_env=""
+        if [ -f "$HOME/.startenv" ]; then
+            _level2_env=$(cat "$HOME/.startenv")
+        elif [ -n "$CONDA_DEFAULT_ENV" ]; then
+            _level2_env="$CONDA_DEFAULT_ENV"
+        fi
+
+        echo -e "\e[34mChoose kernel type:\e[0m"
+        echo "1) Local Level 3 Kernel (isolated .venv)"
+        if [ -n "$_level2_env" ]; then
+            echo "2) Linked Level 2 Kernel (shared $_level2_env runtime)"
+        fi
+        echo -n "Choice (1"
+        [ -n "$_level2_env" ] && echo -n "/2"
+        echo "): "
+        read -r _kernel_type
+
+        if [ "$_kernel_type" = "1" ]; then
+            # Level 3 Kernel
+            echo -e "\e[34m🔗 Registering local Level 3 kernel...\e[0m"
+            source .venv/bin/activate
+            python -m ipykernel install --user --name "$_project_name" --display-name "L3: $_project_name"
+            deactivate
+        elif [ "$_kernel_type" = "2" ] && [ -n "$_level2_env" ]; then
+            # Level 2 Linked Kernel
+            echo -e "\e[34m🔗 Registering linked Level 2 kernel via $_level2_env...\e[0m"
+            micromamba run -n "$_level2_env" python -m ipykernel install --user --name "$_project_name" --display-name "L3: $_project_name (via L2:$_level2_env)"
+        else
+            echo -e "\e[33m⚠️ Invalid choice or no Level 2 environment available. Skipping kernel registration.\e[0m"
+        fi
+    else
+        echo -e "\e[33m⏭️ Skipping Jupyter kernel registration.\e[0m"
+    fi
+
     echo -e "\e[32m✨ Success! Project '$_project_name' is ready for 2025.\e[0m"
     echo -e "Next step: Run '\e[1;36mrlb\e[0m' to activate project environment."
 }
+
+

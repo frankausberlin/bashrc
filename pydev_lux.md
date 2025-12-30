@@ -130,6 +130,16 @@ act() { [ "$#" -ne 0 ] && echo $1 > ~/.startenv && mamba activate $1; }
 
 ### Detailed Steps
 
+Use the `pyinit` command for automated setup:
+
+```bash
+pyinit my_project  # Creates and initializes the project
+cd my_project
+rlb  # Reload bash to activate environment
+```
+
+Or manually:
+
 ```bash
 # 1. Initialize the Project (src-layout recommended for packages)
 mkdir my_project && cd my_project
@@ -144,6 +154,9 @@ uv sync && rlb
 # 4. Version Control Setup
 git init
 curl -s "https://www.toptal.com/developers/gitignore/api/python,linux,vscode" > .gitignore
+
+# 5. Optional: Jupyter Kernel Registration
+# pyinit offers to register a Jupyter kernel (local L3 or linked L2)
 ```
 
 ### Resulting Project Structure
