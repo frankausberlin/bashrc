@@ -19,15 +19,15 @@ python_info() {
     #1. Determine mode and colors
     if [[ "$FORCE_MAMBA_INIT" == "true" ]]; then
         color_bracket="\033[1;31m" # Force mode: Bright Red brackets
-        color_content="\033[0;37m" # Content: White
+        color_content="\033[0;93m" # Content: Bright Yellow
         label="${CONDA_DEFAULT_ENV:-base}"
     elif [[ -n "$CONDA_DEFAULT_ENV" ]]; then
         color_bracket="\033[1;32m" # Normal: Green brackets
-        color_content="\033[0;37m" # Content: White
+        color_content="\033[0;93m" # Content: Bright Yellow
         label="$CONDA_DEFAULT_ENV"
     elif [[ -d "./.venv" || -n "$VIRTUAL_ENV" ]]; then
         color_bracket="\033[1;32m" # Normal: Green brackets
-        color_content="\033[1;36m" # Content: Bright Cyan
+        color_content="\033[1;95m" # Content: Bright Magenta
         label="$(basename "$PWD")"
     fi
 
@@ -37,53 +37,6 @@ python_info() {
     fi
 }
 
-
-# nxx: Launches nnn file manager with cd on quit functionality.
-#
-# Usage: nxx [nnn_options]
-#
-# Parameters:
-#   nnn_options: Optional arguments passed to nnn command.
-#
-# Description: This function prevents nesting of nnn in subshells and sets up cd on quit by using NNN_TMPFILE.
-# If nnn is already running, it prints a message and returns.
-# After nnn exits, it sources the tmpfile to cd to the last directory and removes the file.
-#
-# Example:
-#   nxx -H  # Launch nnn with hidden files shown
-nxx () { # make alias function n for nnn: cd on quit
-    if ! command -v nnn >/dev/null 2>&1; then
-        echo "Error: nnn command not found." >&2
-        return 1
-    fi
-
-    # Block nesting of nnn in subshells
-    [ "${NNNLVL:-0}" -eq 0 ] || {
-        echo "nnn is already running"
-        return
-    }
-
-    # The behaviour is set to cd on quit (nnn checks if NNN_TMPFILE is set)
-    # If NNN_TMPFILE is set to a custom path, it must be exported for nnn to
-    # see. To cd on quit only on ^G, remove the "export" and make sure not to
-    # use a custom path, i.e. set NNN_TMPFILE *exactly* as follows:
-    #      NNN_TMPFILE="$NNN_TMPFILE_PATH"
-    export NNN_TMPFILE="$NNN_TMPFILE_PATH"
-
-    # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
-    # stty start undef
-    # stty stop undef
-    # stty lwrap undef
-    # stty lnext undef
-
-    # The command builtin allows one to alias nnn to n, if desired, without
-    # making an infinitely recursive alias
-    command nnn -H "$@"
-    [ ! -f "$NNN_TMPFILE" ] || {
-        . "$NNN_TMPFILE"
-        rm -f -- "$NNN_TMPFILE" > /dev/null
-    }
-}
 
 # jl: Launches Jupyter Lab with custom configuration.
 #
@@ -315,7 +268,7 @@ exportfolder () {
     fi
 
     # cosmetic output
-    python -c "import os; os.system('clear')"
+    [[ "${BASH_DEBUG:-0}" == "0" ]] && python -c "import os; os.system('clear')"
     python -c "print('_'*147+'\n'+'\x1b[106m_'*69+' exports '+'\x1b[106m_'*69+'\x1b[0m')"
     # Loop through all files in the directory
     count=-1
@@ -339,19 +292,69 @@ exportfolder () {
     done
     python -c "print('\n'+'\x1b[106m_'*147+'\x1b[0m')"
 }
+repair_path() {
+    local var_name="$1"
+    # original value of the variable
+    local original_val="${!var_name}"
+    
+    [[ -z "$original_val" ]] && return 1
+
+    # make a backup of the original variable
+    export "${var_name}_backup"="$original_val"
+
+    # delete redundant and non-existing paths
+    local new_path=""
+    local IFS=':'
+    for dir in $original_val; do
+        if [[ -d "$dir" ]]; then
+            if [[ ! ":$new_path:" =~ ":$dir:" ]]; then
+                if [[ -z "$new_path" ]]; then
+                    new_path="$dir"
+                else
+                    new_path="$new_path:$dir"
+                fi
+            fi
+        fi
+    done
+    
+    # export the repaired variable
+    export "$var_name"="$new_path"
+
+    # return ok
+    return 0
+}
+
+
+
 
 # Luxury Project Initializer (2025 Edition)
-# Usage: pyinit [project_name]
+# Usage: pyinit [--use-user-bash] [project_name]
+# --use-user-bash: Set terminal.integrated.inheritEnv to true for system bashrc support
 # If no name is provided, uses the current directory name.
 pyinit() {
     local _project_name
+    local _use_system_bash=false
+
+    # Parse options
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --use-user-bash)
+                _use_system_bash=true
+                shift
+                ;;
+            *)
+                # Assume it's the project name
+                _project_name="$1"
+                shift
+                ;;
+        esac
+    done
 
     # 1. Determine project name: Use argument or current directory name
-    if [ -z "$1" ]; then
+    if [ -z "$_project_name" ]; then
         _project_name=$(basename "$PWD")
         echo -e "\e[34m💎 Initializing Luxury Project in current folder: $_project_name...\e[0m"
     else
-        _project_name=$1
         echo -e "\e[34m💎 Creating Luxury Project directory: $_project_name...\e[0m"
         mkdir -p "$_project_name" && cd "$_project_name"
     fi
@@ -366,9 +369,14 @@ pyinit() {
 
     # 4. Setup VS Code Configuration
     mkdir -p .vscode
+    local _inherit_env="false"
+    if [ "$_use_system_bash" = true ]; then
+        _inherit_env="true"
+    fi
     cat <<EOF > .vscode/settings.json
 {
     "python.defaultInterpreterPath": "\${workspaceFolder}/.venv/bin/python",
+    "terminal.integrated.inheritEnv": $_inherit_env,
     "python.analysis.typeCheckingMode": "basic",
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "charliermarsh.ruff",

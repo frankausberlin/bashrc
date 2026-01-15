@@ -67,7 +67,7 @@ alias gico="kilocode --auto 'Check this folder for Git changes, create a message
 
 # System Management
 # Update system packages with confirmation
-alias suu="sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt clean && flatpak update -y && sudo snap refresh"
+alias suu="sudo nala update && sudo nala upgrade -y && sudo nala autoremove -y && sudo nala clean && flatpak update -y && sudo snap refresh"
 alias los="cw && suu"
 alias losj="cw && suu && jl . && stop"
 alias losc="cw && suu && chromerdb && stop"
@@ -83,6 +83,7 @@ alias searx='mkdir -p ~/.searxng/config/ ~/.searxng/data/ ; docker stop searxng 
 alias wtf='sgpt -d "The following is the error output of a bash command. Please explain what the error message means and how it can be fixed. Please answer in German. Here is the message: $(cat ~/.lasterror)"'
 
 # Connections
+alias ubi="ssh frank@ubi"
 alias doogee="ssh -o IdentitiesOnly=yes -i ~/.ssh/id_doogee -p 8022 u0_a202@doogee"
 alias redmi="ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa -p 8022 u0_a470@redmi"
 alias teci="ssh -p 8022 u0_a218@teci"

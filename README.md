@@ -6,17 +6,19 @@ A comprehensive and luxurious Bash configuration tailored for Python development
 
 ### Environment Management
 - **Smart Environment Activation**: Automatically activates the last used Conda/Mamba environment on shell startup
-- **VS Code Integration**: Prevents environment conflicts by not activating Conda in VS Code terminals
+- **VS Code Integration**: Optional - creates settings that allow VS Code to use the user's bashrc.
 - **uv Support**: Detects and activates local `.venv` environments created by uv in project directories
 - **Environment Switching**: Use `act <env>` to switch environments and remember your choice
 - **Force Mode**: Use `rlb m` to force conda activation (red prompt indicators) even when uv environments exist
-- **Smart Terminal Prompt**: Enhanced PS1 showing random emojis, user/host info, current directory, and Python environment status with color-coded environment indicators (green=conda, cyan=uv, red=force mode)
+- **Smart Terminal Prompt**: Enhanced PS1 showing random emojis, user/host info, current directory, and Python environment status with color-coded environment indicators:
+  - Mamba Environments are colored Bright Yellow
+  - UV Environments are colored Bright Magenta
+  - A forced Mamba Environment can be identified by Red brackets (these are usually Green).
 
 ### Development Tools
 - **Jupyter Lab Launcher** (`jl`): Start Jupyter Lab with optimized settings for local development
-- **File Manager** (`nxx`): Enhanced nnn file manager with cd-on-quit functionality
 - **Android Development** (`adx`): ADB utilities for managing Android devices and packages
-- **Path Management**: `exportadd` for safely adding paths to environment variables
+- **Path Management**: `exportadd` for safely adding paths to environment variables and `repair_path` removes dead entries and duplicate entries
 - **Custom Exports**: `exportfolder` loads environment variables from `~/.config/_exports`
 - **Luxury Project Initializer** (`pyinit`): Automated Python project setup with uv, VS Code configuration, and best practices
 
@@ -62,46 +64,6 @@ For the complete luxury Python development experience, see [`pydev_lux.md`](pyde
 - Pre-commit hooks and testing
 - Daily development commands
 
-## 📦 Installation
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/yourusername/bashrc.git
-   cd bashrc
-   ```
-
-2. Copy the configuration files to your home directory:
-   ```bash
-   cp .bashrc ~/.bashrc
-   cp .bash_lib ~/.bash_lib
-   cp .bash_aliases ~/.bash_aliases
-   ```
-
-3. Reload your shell:
-   ```bash
-   source ~/.bashrc
-   ```
-
-## ⚙️ Configuration
-
-- **Environment Files**: Place custom environment variables in `~/.config/_exports/` (one file per variable)
-- **Default Environment**: Set your preferred Conda environment in `~/.startenv`
-- **Current Working Directory**: Use `cw` to save/restore your working folder
-
-## 🔧 Requirements
-
-- Bash shell
-- Conda/Mamba (MiniForge recommended)
-- uv (for modern Python project management)
-- Various tools as needed (nnn, adb, docker, etc.)
-
-## 🤝 Contributing
-
-Feel free to submit issues, feature requests, or pull requests to enhance this configuration.
-
-## 📄 License
-
-This project is open source. Please check individual tool licenses for any restrictions.
 
 ---
 
